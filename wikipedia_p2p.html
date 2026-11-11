@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>気圧 - Wikipedia</title>
+    
+    <!-- MathJax 3 LaTeX Math Rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+
+    <!-- PeerJS CDN with Fallback handling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
+    <script>
+        if (typeof Peer === 'undefined') {
+            document.write('<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"><\/script>');
+        }
+    </script>
+
+    <style>
+        /* ==========================================================================
+           Wikipedia Standard Vector Theme Stylesheet
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #202122;
+            background-color: #f8f9fa;
+        }
+
+        a {
+            color: #0645ad;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Top Header Navigation */
+        #mw-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #a2a9b1;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .mw-header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .wiki-logo {
+            font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wiki-logo span {
+            font-size: 11px;
+            font-weight: normal;
+            color: #54595d;
+            font-family: sans-serif;
+        }
+
+        .mw-search-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .mw-search-box input[type="text"] {
+            padding: 5px 10px;
+            border: 1px solid #a2a9b1;
+            border-radius: 2px 0 0 2px;
+            width: 240px;
+            font-size: 13px;
+        }
+
+        .mw-search-box button {
+            padding: 5px 12px;
+            background-color: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            border-left: none;
+            border-radius: 0 2px 2px 0;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .mw-user-tools {
+            font-size: 12px;
+            color: #54595d;
+        }
+
+        .mw-user-tools a {
+            margin-left: 10px;
+        }
+
+        /* Main Container Layout */
+        #mw-wrapper {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: calc(100vh - 50px);
+            border-left: 1px solid #a2a9b1;
+            border-right: 1px solid #a2a9b1;
+        }
+
+        /* Left Sidebar */
+        #mw-panel {
+            width: 170px;
+            padding: 15px 10px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #a2a9b1;
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+
+        .portal-group {
+            margin-bottom: 20px;
+        }
+
+        .portal-group h3 {
+            font-size: 11px;
+            color: #54595d;
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 2px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+
+        .portal-group ul {
+            list-style: none;
+        }
+
+        .portal-group li {
+            margin-bottom: 4px;
+        }
+
+        /* Main Content Area */
+        #content {
+            flex-grow: 1;
+            padding: 20px 30px;
+            background-color: #ffffff;
+            min-width: 0;
+        }
+
+        /* Article Navigation Tabs */
+        .mw-article-tabs {
+            display: flex;
+            border-bottom: 1px solid #a2a9b1;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .mw-article-tabs div {
+            padding: 6px 14px;
+            border: 1px solid transparent;
+            margin-bottom: -1px;
+            cursor: pointer;
+        }
+
+        .mw-article-tabs .selected {
+            background-color: #ffffff;
+            border-color: #a2a9b1 #a2a9b1 #ffffff #a2a9b1;
+            font-weight: bold;
+        }
+
+        /* Headings */
+        h1.firstHeading {
+            font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+            font-size: 28px;
+            font-weight: normal;
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+
+        #siteSub {
+            font-size: 12px;
+            color: #54595d;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-family: 'Linux Libertine', 'Georgia', 'Times', serif;
+            font-size: 20px;
+            font-weight: normal;
+            border-bottom: 1px solid #a2a9b1;
+            padding-bottom: 3px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 14px;
+            text-align: justify;
+        }
+
+        /* Right Infobox */
+        .infobox {
+            float: right;
+            clear: right;
+            margin: 0 0 15px 20px;
+            border: 1px solid #a2a9b1;
+            background-color: #f8f9fa;
+            padding: 5px;
+            width: 290px;
+            font-size: 12px;
+            border-spacing: 0;
+        }
+
+        .infobox th {
+            background-color: #cedff2;
+            text-align: center;
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        .infobox td {
+            padding: 4px 6px;
+            border-top: 1px solid #a2a9b1;
+        }
+
+        .infobox-label {
+            font-weight: bold;
+            width: 40%;
+            background-color: #f2f5f8;
+        }
+
+        /* Table of Contents (TOC) */
+        #toc {
+            border: 1px solid #a2a9b1;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            display: inline-block;
+            margin: 10px 0 20px 0;
+            min-width: 220px;
+            font-size: 13px;
+        }
+
+        #toc .toctitle {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        #toc ul {
+            list-style: none;
+        }
+
+        #toc li {
+            margin-bottom: 3px;
+        }
+
+        #toc .tocnumber {
+            color: #202122;
+            margin-right: 5px;
+        }
+
+        /* Math Formulas Container */
+        .formula-box {
+            background-color: #f8f9fa;
+            border: 1px dashed #a2a9b1;
+            padding: 10px 15px;
+            margin: 12px 0;
+            font-size: 16px;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        /* Hide elements on print */
+        @media print {
+            #hidden-chat-container, #mw-header, #mw-panel, .mw-article-tabs {
+                display: none !important;
+            }
+        }
+
+        /* ==========================================================================
+           CAMOUFLAGED HIDDEN CHAT UI (Ultra-compact, No instructions)
+           ========================================================================== */
+        #references-heading {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #references-heading:hover {
+            background-color: #f4f5f6;
+        }
+
+        .toggle-badge {
+            font-size: 11px;
+            color: #0645ad;
+            font-family: sans-serif;
+            font-weight: normal;
+        }
+
+        /* Chat Root Box */
+        #hidden-chat-container {
+            display: none; /* Default Hidden */
+            margin-top: 8px;
+            padding: 6px 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #a2a9b1;
+            border-radius: 2px;
+            font-family: "Consolas", "Courier New", monospace, sans-serif;
+            font-size: 11px;
+            color: #202122;
+        }
+
+        /* Step 1: Pre-connection Form */
+        #chat-login-step {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        #chat-login-step input[type="text"],
+        #chat-login-step input[type="password"] {
+            font-size: 11px;
+            padding: 3px 6px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            width: 110px;
+            background: #fff;
+        }
+
+        /* Step 2: Connected Chat Area */
+        #chat-room-step {
+            display: none;
+        }
+
+        /* Strict 4-Message Chat Log Area */
+        .chat-log-box {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            height: 76px; /* Ultra-narrow height for 4 lines */
+            overflow-y: hidden;
+            padding: 3px 6px;
+            margin-bottom: 6px;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .chat-msg-item {
+            font-size: 11px;
+            line-height: 1.35;
+            color: #333;
+            border-bottom: 1px dotted #f0f0f0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-msg-item .msg-time {
+            color: #888;
+            margin-right: 4px;
+            font-size: 10px;
+        }
+
+        .chat-msg-item .msg-prefix {
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .chat-msg-item.sender-me .msg-prefix {
+            color: #0645ad;
+        }
+
+        .chat-msg-item.sender-peer .msg-prefix {
+            color: #2a7b2e;
+        }
+
+        .chat-msg-item.system-msg {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        /* Message Input Section */
+        .chat-input-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .chat-input-row input[type="text"] {
+            flex-grow: 1;
+            font-size: 11px;
+            padding: 3px 6px;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            font-family: inherit;
+        }
+
+        .btn-action {
+            font-size: 11px;
+            padding: 3px 8px;
+            background-color: #f0f0f0;
+            border: 1px solid #adadad;
+            border-radius: 2px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .btn-action:hover {
+            background-color: #e2e2e2;
+        }
+
+        /* Standard Wikipedia References */
+        .mw-references-wrap {
+            font-size: 12px;
+            color: #54595d;
+            margin-top: 15px;
+        }
+
+        .mw-references-wrap ol {
+            padding-left: 20px;
+        }
+
+        .mw-references-wrap li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <div id="mw-header">
+        <div class="mw-header-left">
+            <div class="wiki-logo">
+                Wikipedia
+                <span>フリー百科事典</span>
+            </div>
+            <div class="mw-search-box">
+                <input type="text" placeholder="Wikipedia内を検索" value="気圧">
+                <button type="button">検索</button>
+            </div>
+        </div>
+        <div class="mw-user-tools">
+            <span>未ログイン</span>
+            <a href="#">トーク</a>
+            <a href="#">下書き</a>
+            <a href="#">投稿記録</a>
+            <a href="#">アカウント作成</a>
+            <a href="#">ログイン</a>
+        </div>
+    </div>
+
+    <!-- Main Container Layout -->
+    <div id="mw-wrapper">
+
+        <!-- Left Navigation Panel -->
+        <div id="mw-panel">
+            <div class="portal-group">
+                <h3>案内</h3>
+                <ul>
+                    <li><a href="#">メインページ</a></li>
+                    <li><a href="#">コミュニティ・ポータル</a></li>
+                    <li><a href="#">最近の出来事</a></li>
+                    <li><a href="#">新しいページ</a></li>
+                    <li><a href="#">おまかせ表示</a></li>
+                    <li><a href="#">練習用ページ</a></li>
+                </ul>
+            </div>
+            <div class="portal-group">
+                <h3>ヘルプ</h3>
+                <ul>
+                    <li><a href="#">ヘルプ</a></li>
+                    <li><a href="#">井戸端</a></li>
+                    <li><a href="#">お知らせ</a></li>
+                    <li><a href="#">バグの報告</a></li>
+                    <li><a href="#">寄付</a></li>
+                </ul>
+            </div>
+            <div class="portal-group">
+                <h3>ツール</h3>
+                <ul>
+                    <li><a href="#">リンク元</a></li>
+                    <li><a href="#">関連ページの更新状況</a></li>
+                    <li><a href="#">特別ページ</a></li>
+                    <li><a href="#">印刷用バージョン</a></li>
+                    <li><a href="#">固定リンク</a></li>
+                    <li><a href="#">ページ情報</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Central Content Body -->
+        <div id="content">
+
+            <!-- Tabs -->
+            <div class="mw-article-tabs">
+                <div class="selected">ページ</div>
+                <div>ノート</div>
+                <div style="margin-left: auto;">閲覧</div>
+                <div>編集</div>
+                <div>履歴表示</div>
+            </div>
+
+            <!-- Title & Subtitle -->
+            <h1 class="firstHeading">気圧</h1>
+            <div id="siteSub">出典: フリー百科事典『ウィキペディア（Wikipedia）』</div>
+
+            <!-- Right Infobox -->
+            <table class="infobox">
+                <tr>
+                    <th colspan="2">気圧（大気圧）</th>
+                </tr>
+                <tr>
+                    <td class="infobox-label">物理量</td>
+                    <td>圧力 (Pressure)</td>
+                </tr>
+                <tr>
+                    <td class="infobox-label">SI単位</td>
+                    <td>パスカル (Pa)</td>
+                </tr>
+                <tr>
+                    <td class="infobox-label">気象学単位</td>
+                    <td>ヘクトパスカル (hPa)</td>
+                </tr>
+                <tr>
+                    <td class="infobox-label">標準大気圧 ($atm$)</td>
+                    <td>1013.25 hPa</td>
+                </tr>
+                <tr>
+                    <td class="infobox-label">水銀柱ミリメートル</td>
+                    <td>760 mmHg (Torr)</td>
+                </tr>
+                <tr>
+                    <td class="infobox-label">工学単位換算</td>
+                    <td>1 bar = 100,000 Pa</td>
+                </tr>
+            </table>
+
+            <!-- Lead Paragraph -->
+            <p>
+                <b>気圧</b>（きあつ、英: atmospheric pressure、barometric pressure）は、気体の圧力のことである。特に、地球を覆う大気によって生じる圧力を<b>大気圧</b>（たいきあつ）と呼ぶ。
+            </p>
+            <p>
+                単位面積あたりの空気の重量によって生じる力であり、高度が上がるにつれて上空の空気の量が減るため、気圧は低下する。国際標準大気 (ISA) における海面上の標準大気圧は <b>1013.25 hPa</b>（ヘクトパスカル）と定義されている。
+            </p>
+
+            <!-- Table of Contents -->
+            <div id="toc">
+                <div class="toctitle">目次</div>
+                <ul>
+                    <li><a href="#section-1"><span class="tocnumber">1</span> <span class="toctext">概要</span></a></li>
+                    <li><a href="#section-2"><span class="tocnumber">2</span> <span class="toctext">大気圧と気圧変化</span></a></li>
+                    <li><a href="#section-3"><span class="tocnumber">3</span> <span class="toctext">物理法則と状態方程式</span></a></li>
+                    <li><a href="#references-heading"><span class="tocnumber">4</span> <span class="toctext">参考文献</span></a></li>
+                </ul>
+            </div>
+
+            <!-- Section 1 -->
+            <h2 id="section-1">1 概要</h2>
+            <p>
+                気圧はあらゆる方向に均等に作用するスカラ量である。静止している流体中における特定の点にかかる圧力は、その点の上部にある流体の重さの積算に等しい。17世紀にエヴァンジェリスタ・トリチェリが水銀柱を用いた実験（トリチェリの実験）により、大気が圧力を有していること、およびその大きさが水銀柱約760mmの高さに相当することを証明した。
+            </p>
+            <p>
+                気象学において気圧の水平分布は風や天候の変化を駆動する重要なパラメータである。等圧線（気圧が等しい点を結んだ線）の密度が高いほど気圧傾度力が大きく、風速が強くなる。高気圧から低気圧に向かって空気が流出・流入することにより、大気循環が形成される。
+            </p>
+
+            <!-- Section 2 -->
+            <h2 id="section-2">2 大気圧と気圧変化</h2>
+            <p>
+                高度 $z$ における大気圧 $P(z)$ の変化は、静水圧の平衡方程式によって記述される。密度の等しい理想気体を仮定した場合、流体静力学の基本式は以下の通りとなる。
+            </p>
+
+            <div class="formula-box">
+                $$\frac{dP}{dz} = -\rho g$$
+            </div>
+
+            <p>
+                ここで $\rho$ は大気の密度、$g$ は重力加速度（約 $9.80665 \text{ m/s}^2$）を表す。高度とともに大気密度 $\rho$ も減少するため、実際の標準大気構造では気圧は指数関数的に減少する。海抜 5,500m 付近で地表の約半分の気圧（約 500 hPa）となり、高山病や航空機の客室加圧が必要とされる根拠となる。
+            </p>
+            <p>
+                日変化（気圧日変動）や低気圧・高気圧の通過による気象学的変動も存在し、日本付近では台風の接近に伴って中心気圧が 950 hPa 以下まで低下することがある。
+            </p>
+
+            <!-- Section 3 -->
+            <h2 id="section-3">3 物理法則と状態方程式</h2>
+            <p>
+                気圧の変化および挙動は、熱力学における理想気体の状態方程式によって密接に関連づけられる。気体の圧力 $P$、体積 $V$、物質量 $n$、絶対温度 $T$、および気体定数 $R$ の関係は以下の式で表現される。
+            </p>
+
+            <div class="formula-box">
+                $$P V = n R T$$
+            </div>
+
+            <p>
+                ここで気体定数 $R$ の値は約 $8.314 \text{ J/(mol}\cdot\text{K)}$ である。温度が一定の場合、圧力と体積は反比例する（ボイルの法則）。また体積が一定の場合、圧力は絶対温度に比例する（シャルルの法則）。
+            </p>
+            <p>
+                大気の熱力学過程において、断熱膨張や断熱圧縮に伴う温度変化が雲の発生や降水現象の直接的な因果となる。
+            </p>
+
+            <!-- Section 4 (Camouflaged P2P Chat Root) -->
+            <h2 id="references-heading" onclick="toggleChatUI()">
+                <span>4 参考文献</span>
+                <span class="toggle-badge" id="toggle-indicator">[表示]</span>
+            </h2>
+
+            <!-- Hidden Camouflaged P2P Chat Container -->
+            <div id="hidden-chat-container">
+                <!-- Step 1: Pre-connection Form -->
+                <div id="chat-login-step">
+                    <input type="text" id="user-name" placeholder="表示名" autocomplete="off">
+                    <input type="password" id="room-pass" placeholder="合言葉" autocomplete="off" onkeydown="handleLoginKey(event)">
+                    <button type="button" class="btn-action" onclick="joinRoom()">接続</button>
+                </div>
+
+                <!-- Step 2: Connected Chat Area -->
+                <div id="chat-room-step">
+                    <!-- Strict 4-Message Chat Log Area -->
+                    <ul class="chat-log-box" id="chat-log-list"></ul>
+
+                    <!-- Input Row -->
+                    <div class="chat-input-row">
+                        <input type="text" id="msg-input" placeholder="入力..." onkeydown="handleMsgKey(event)">
+                        <button type="button" class="btn-action" onclick="sendMessage()">送信</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standard Wikipedia Reference List Mock -->
+            <div class="mw-references-wrap">
+                <ol>
+                    <li>理科年表（国立天文台編） - 気象部『標準大気諸元表』</li>
+                    <li>Torricelli, E. (1644). <i>De motu gravium naturaliter accelerato</i>.</li>
+                    <li>日本気象学会 編 『気象学ハンドブック』 朝倉書店、2005年。</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // System State Variables
+        let peer = null;
+        let isHost = false;
+        let hostConn = null;              // Client: Connection to Host
+        const clientConns = new Map();     // Host: Map of Client ID -> DataConnection
+        const activeUsers = new Set();     // Active User Display Names
+
+        let myUserName = "";
+        let roomHash = "";
+        let isAdmin = false;
+        let isLocked = false;
+        let isBanned = false;
+
+        // SHA-256 Passphrase Hasher
+        async function sha256(str) {
+            const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Handle Enter key on Login Form
+        function handleLoginKey(e) {
+            if (e.key === 'Enter') joinRoom();
+        }
+
+        // Join Room (P2P Host / Client Auto Fallback)
+        async function joinRoom() {
+            const nameInput = document.getElementById('user-name').value.trim();
+            const passInput = document.getElementById('room-pass').value.trim();
+
+            if (!nameInput || !passInput) return;
+
+            myUserName = nameInput;
+            activeUsers.add(myUserName);
+            const rawHash = await sha256(passInput);
+            roomHash = rawHash.substring(0, 16);
+            const roomId = "wp-room-" + roomHash;
+
+            // Step UI Switch
+            document.getElementById('chat-login-step').style.display = 'none';
+            document.getElementById('chat-room-step').style.display = 'block';
+
+            // Attempt to create Host Peer
+            try {
+                peer = new Peer(roomId);
+
+                peer.on('open', function() {
+                    // Successfully became Host
+                    isHost = true;
+                    addMessageToLog(`[系統] 接続完了`, 'system');
+
+                    // Check for 12h /save Backup
+                    checkSavedLogs();
+                });
+
+                peer.on('connection', function(conn) {
+                    // Host receiving client connection
+                    conn.on('open', function() {
+                        clientConns.set(conn.peer, conn);
+                        
+                        // Send current lock state to newly joined client
+                        conn.send({ type: 'state_sync', isLocked: isLocked });
+                    });
+
+                    conn.on('data', function(data) {
+                        handleIncomingData(data, conn.peer);
+                    });
+
+                    conn.on('close', function() {
+                        clientConns.delete(conn.peer);
+                    });
+                });
+
+                peer.on('error', function(err) {
+                    if (err.type === 'unavailable-id') {
+                        // Room Host already exists -> Fallback to Client mode
+                        isHost = false;
+                        connectAsClient(roomId);
+                    } else {
+                        addMessageToLog(`[エラー] 接続失敗`, 'system');
+                    }
+                });
+            } catch (err) {
+                connectAsClient(roomId);
+            }
+        }
+
+        // Client Fallback Connection
+        function connectAsClient(roomId) {
+            peer = new Peer(); // Random Client ID
+
+            peer.on('open', function() {
+                hostConn = peer.connect(roomId);
+
+                hostConn.on('open', function() {
+                    addMessageToLog(`[系統] 接続完了`, 'system');
+                    // Notify Host of username
+                    hostConn.send({ type: 'user_join', name: myUserName });
+                });
+
+                hostConn.on('data', function(data) {
+                    handleIncomingData(data, null);
+                });
+
+                hostConn.on('close', function() {
+                    addMessageToLog(`[系統] 切断されました`, 'system');
+                });
+            });
+
+            peer.on('error', function() {
+                addMessageToLog(`[エラー] 接続エラー`, 'system');
+            });
+        }
+
+        // Broadcast Data to all peers (Host -> Clients)
+        function broadcast(data, excludePeerId = null) {
+            if (isHost) {
+                clientConns.forEach((conn, id) => {
+                    if (id !== excludePeerId && conn.open) {
+                        conn.send(data);
+                    }
+                });
+            } else if (hostConn && hostConn.open) {
+                hostConn.send(data);
+            }
+        }
+
+        // Handle Incoming P2P Data Messages
+        function handleIncomingData(data, senderPeerId) {
+            if (data.type === 'chat') {
+                activeUsers.add(data.senderName);
+                if (isHost) {
+                    // Relay to other clients
+                    broadcast(data, senderPeerId);
+                }
+                addMessageToLog(`${data.senderName}: ${data.text}`, 'peer');
+            } else if (data.type === 'admin_notice') {
+                if (isHost) broadcast(data, senderPeerId);
+                addMessageToLog(`${data.senderName} is admin`, 'system');
+            } else if (data.type === 'lock_state') {
+                isLocked = data.isLocked;
+                if (isHost) broadcast(data, senderPeerId);
+                addMessageToLog(isLocked ? `[系統] ロックされました` : `[系統] ロック解除されました`, 'system');
+            } else if (data.type === 'ban') {
+                activeUsers.add(data.targetName);
+                if (isHost) broadcast(data, senderPeerId);
+                
+                if (myUserName === data.targetName) {
+                    isBanned = true;
+                }
+                addMessageToLog(`${data.targetName}はbanされました`, 'system');
+            } else if (data.type === 'state_sync') {
+                isLocked = data.isLocked;
+            } else if (data.type === 'user_join') {
+                activeUsers.add(data.name);
+                if (isHost) broadcast(data, senderPeerId);
+            }
+        }
+
+        // Send Message Handler & Command Parser
+        function sendMessage() {
+            const input = document.getElementById('msg-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = '';
+
+            // Handle Admin Commands
+            if (text === '/save') {
+                if (!isAdmin) return;
+                saveLogsToLocal();
+                return;
+            }
+
+            if (text === '/lock') {
+                if (!isAdmin) return;
+                isLocked = true;
+                broadcast({ type: 'lock_state', isLocked: true });
+                addMessageToLog(`[系統] ロックされました`, 'system');
+                return;
+            }
+
+            if (text === '/unlock') {
+                if (!isAdmin) return;
+                isLocked = false;
+                broadcast({ type: 'lock_state', isLocked: false });
+                addMessageToLog(`[系統] ロック解除されました`, 'system');
+                return;
+            }
+
+            if (text.startsWith('/ban ')) {
+                if (!isAdmin) return;
+                const targetName = text.substring(5).trim();
+                
+                // Check if target name matches
+                let found = activeUsers.has(targetName);
+                
+                if (found) {
+                    if (targetName === myUserName) isBanned = true;
+                    broadcast({ type: 'ban', targetName: targetName });
+                    addMessageToLog(`${targetName}はbanされました`, 'system');
+                } else {
+                    addMessageToLog(`名前が間違っています`, 'system');
+                }
+                return;
+            }
+
+            // Check Lock state for normal users
+            if (isLocked && !isAdmin) {
+                addMessageToLog(`lock中は発言できません`, 'system');
+                return;
+            }
+
+            // Check Banned User State
+            if (isBanned) {
+                // DO NOT send to P2P network. Local display only with suffix.
+                addMessageToLog(`${myUserName}: ${text} *banされました`, 'me');
+                return;
+            }
+
+            // Normal Message Broadcast
+            const msgObj = {
+                type: 'chat',
+                senderName: myUserName,
+                text: text
+            };
+
+            broadcast(msgObj);
+            addMessageToLog(`${myUserName}: ${text}`, 'me');
+        }
+
+        function handleMsgKey(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        // Add Message to DOM (Strictly Keep Max 4 Messages)
+        function addMessageToLog(str, type) {
+            const list = document.getElementById('chat-log-list');
+            const li = document.createElement('li');
+            li.className = 'chat-msg-item';
+
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            if (type === 'me') {
+                li.classList.add('sender-me');
+                li.innerHTML = `<span class="msg-time">[${timeStr}]</span>${escapeHTML(str)}`;
+            } else if (type === 'peer') {
+                li.classList.add('sender-peer');
+                li.innerHTML = `<span class="msg-time">[${timeStr}]</span>${escapeHTML(str)}`;
+            } else {
+                li.classList.add('system-msg');
+                li.innerHTML = `<span class="msg-time">[${timeStr}]</span>${escapeHTML(str)}`;
+            }
+
+            list.appendChild(li);
+
+            // Strictly retain maximum 4 messages in DOM
+            while (list.children.length > 4) {
+                list.removeChild(list.firstChild);
+            }
+        }
+
+        // /save LocalStorage Backup (12 Hours)
+        function saveLogsToLocal() {
+            const list = document.getElementById('chat-log-list');
+            const logs = [];
+            list.querySelectorAll('li').forEach(li => {
+                logs.push(li.innerText);
+            });
+
+            const backupData = {
+                expiresAt: Date.now() + (12 * 60 * 60 * 1000), // 12 hours
+                logs: logs
+            };
+
+            localStorage.setItem('wp_chat_save_' + roomHash, JSON.stringify(backupData));
+            addMessageToLog(`[系統] ログを12時間保存しました`, 'system');
+        }
+
+        // Check & Restore /save Backup (Self-Destructing)
+        function checkSavedLogs() {
+            const key = 'wp_chat_save_' + roomHash;
+            const raw = localStorage.getItem(key);
+            if (!raw) return;
+
+            try {
+                const data = JSON.parse(raw);
+                if (Date.now() < data.expiresAt) {
+                    // Restore logs
+                    data.logs.forEach(logText => {
+                        addMessageToLog(logText, 'peer');
+                    });
+                }
+            } catch (e) {}
+
+            // Immediately destroy backup after single restore
+            localStorage.removeItem(key);
+        }
+
+        // Helper: HTML Escaping
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
+        // Toggle Hidden Chat Display
+        function toggleChatUI() {
+            const container = document.getElementById('hidden-chat-container');
+            const badge = document.getElementById('toggle-indicator');
+
+            if (container.style.display === 'none' || container.style.display === '') {
+                container.style.display = 'block';
+                badge.textContent = '[非表示]';
+            } else {
+                container.style.display = 'none';
+                badge.textContent = '[表示]';
+            }
+        }
+
+        // Konami Code Detection Logic (↑ ↑ ↓ ↓ ← → ← → B A)
+        const konamiSequence = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+        let konamiIndex = 0;
+
+        window.addEventListener('keydown', function(e) {
+            const key = e.key.toLowerCase();
+            
+            if (key === konamiSequence[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiSequence.length) {
+                    konamiIndex = 0;
+                    isAdmin = true;
+                    if (myUserName) {
+                        broadcast({ type: 'admin_notice', senderName: myUserName });
+                        addMessageToLog(`${myUserName} is admin`, 'system');
+                    }
+                }
+            } else {
+                konamiIndex = 0;
+            }
+
+            // Shortcut Key: Ctrl + Q or Cmd + Q (Toggle Chat Visibility)
+            if ((e.ctrlKey || e.metaKey) && (key === 'q')) {
+                e.preventDefault();
+                toggleChatUI();
+            }
+
+            // Shortcut Key: Ctrl + D or Cmd + D (EMERGENCY REDIRECT TO REAL WIKIPEDIA)
+            if ((e.ctrlKey || e.metaKey) && (key === 'd')) {
+                e.preventDefault();
+                // Instant fake redirect to real atmospheric pressure article
+                window.location.href = "https://ja.wikipedia.org/wiki/" + encodeURIComponent("気圧");
+            }
+        });
+    </script>
+</body>
+</html>
